@@ -21,7 +21,7 @@ body, html {
   align-items: center;
   flex-direction: column;
   gap: 24px;
-  background: linear-gradient(to bottom, white 50%, green 50%);
+  background: linear-gradient( white 50%, green 50%);
   transition: all 0.3s ease;
   padding: 20px;
 }
