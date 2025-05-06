@@ -1,1 +1,602 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Platform Navigation</title>
+        <link rel="stylesheet" href="styles.css">
+      
+    </head>
+    <body>
+        
+        <div class="container" id="mainMenu">
+            <button class="android-btn" onclick="goToSection('android')">ANDROID</button>
+            <button class="info-btn" onclick="goToSection('info')">INFO</button>
+             <button class="info-btn" onclick="goToSection('CHATBOT')">CHATBOT</button>
+            <button class="ios-btn" onclick="goToSection('ios')">IOS</button>
+        </div>
+        
+        <div class="section" id="androidSection">
+            <table>
+                <caption></caption>
+                <thead>
+                    <tr>
+                        <th>Phone Name</th>
+                        <th>Base Price</th>
+                        <th>Specifications</th>
+                        <th>Release Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://www.phonearena.com/phones/Samsung-Galaxy-S23-Ultra_id12002" title="View more">Samsung Galaxy S23 Ultra</a></td>
+                        <td>$1,199</td>
+                        <td>Display: 6.8" Dynamic AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 200MP Rear, 12MP Front <br>
+                            Battery: 5000mAh<br>
+                            OS: Android 13</td>
+                        <td>February 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.techradar.com/phones/google-pixel-phones/google-pixel-8-pro-review" title="View more">Google Pixel 8 Pro</a></td>
+                        <td>$999</td>
+                        <td>Display: 6.7" LTPO OLED<br>
+                            Processor: Google Tensor G3<br>
+                            Camera: 50MP Rear, 10.8MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: Android 14</td>
+                        <td>October 2024</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.oneplus.com/us/11/specs">OnePlus 11</a></td>
+                        <td>$899</td>
+                        <td>Display: 6.7" Fluid AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 50MP Rear, 16MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: Android 13</td>
+                        <td>January 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.mi.com/global/product/xiaomi-13-pro/specs" title="View more">Xiaomi 13 Pro</a></td>
+                        <td>$1,099</td>
+                        <td>Display: 6.73" AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 50MP Rear, 32MP Front<br>
+                            Battery: 4820mAh<br>
+                            OS: MIUI 14 (Android 13)</td>
+                        <td>February 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.samsung.com/ph/smartphones/galaxy-z-fold5/specs/?msockid=3e9b1d1f03aa60d2140808c702be6166" title="View more">Samsung Galaxy Z Fold 5</a></td>
+                        <td>$1,799</td>
+                        <td>Display: 7.6" Foldable AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 50MP Rear<br>
+                            10MP Front, Battery: 4400mAh<br>OS: Android 13</td>
+                        <td>August 2024</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/oppo_find_x6_pro-12105.php" title="View more">Oppo Find X6 Pro</a></td>
+                        <td>$1,299</td>
+                        <td>Display: 6.82" AMOLED<br>Processor: Qualcomm Snapdragon 8 Gen 2<br>Camera: 50MP Rear, 32MP Front<br>Battery: 5000mAh<br> OS: ColorOS 13 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/sony_xperia_1_v-12263.php" title="View more">Sony Xperia 1 V</a></td>
+                        <td>$1,399</td>
+                        <td>Display: 6.5" OLED 4K<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 48MP Rear, 8MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: Android 14</td>
+                        <td>April 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/motorola_edge_40_pro-12127.php" title="View more">Motorola Edge 40 Pro</a></td>
+                        <td>$899</td>
+                        <td>Display: 6.67" OLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 50MP Rear, 32MP Front<br>
+                            Battery: 4600mAh<br>
+                            OS: Android 13</td>
+                        <td>February 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/realme_gt2_pro-11228.php" title="View more">Realme GT 2 Pro</a></td>
+                        <td>$849</td>
+                        <td>Display: 6.7" AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 1<br>
+                            Camera: 50MP Rear, 32MP Front, Battery: 5000mAh<br>
+                            OS: Realme UI 4.0 (Android 13)</td>
+                        <td>January 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/asus_rog_phone_7-12223.php" title="View more">Asus ROG Phone 7</a></td>
+                        <td>$1,099</td>
+                        <td>Display: 6.78" AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 50MP Rear, 32MP Front<br>
+                            Battery: 6000mAh<br>
+                            OS: Android 13</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/vivo_x90_pro-11989.php" title="View more">Vivo X90 Pro</a></td>
+                        <td>$1,049</td>
+                        <td>Display: 6.78" AMOLED<br>
+                            Processor: MediaTek Dimensity 9200<br>
+                            Camera: 50MP Rear, 32MP Front<br>
+                            Battery: 4870mAh<br>
+                            OS: Funtouch OS 13 (Android 13)</td>
+                        <td>February 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/xiaomi_poco_f5_pro-12257.php" title="View more">Poco F5 Pro</a></td>
+                        <td>$649</td>
+                        <td>Display: 6.67" AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 64MP Rear, 16MP Front<br>
+                            Battery: 5160mAh<br>
+                            OS: MIUI 14 (Android 13)</td>
+                        <td>April 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/honor_magic5_pro-12148.php" title="View more">Honor Magic 5 Pro</a></td>
+                        <td>$1,099</td>
+                        <td>Display: 6.81" OLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
+                            Camera: 50MP Rear, 12MP Front<br>
+                            Battery: 5100mAh<br>
+                            OS: MagicOS 7.0 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/google_pixel_8-12546.php" title="View more">Google Pixel 8</a></td>
+                        <td>$699</td>
+                        <td>Display: 6.2" OLED<br>
+                            Processor: Google Tensor G3<br>
+                            Camera: 50MP Rear, 10.8MP Front<br>
+                            Battery: 4500mAh, OS: Android 14</td>
+                        <td>October 2024</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a54-5g-awesome-graphite-256gb-sm-a546ezkdphl/" title="View more">Samsung Galaxy A54 5G</a></td>
+                        <td>$449</td>
+                        <td>Display: 6.5" Super AMOLED<br>
+                            Processor: Exynos 1380<br>
+                            Camera: 50MP Rear, 32MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: Android 13</td>
+                        <td>January 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/oneplus_nord_3-12135.php" title="View more">OnePlus Nord 3</a></td>
+                        <td>$399</td>
+                        <td>Display: 6.74" AMOLED<br>
+                            Processor: MediaTek Dimensity 9000<br>
+                            Camera: 50MP Rear, 16MP Front<br>
+                            Battery: 5000mAh<br>
+                                OS: OxygenOS 13 (Android 13)</td>
+                        <td>April 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/xiaomi_redmi_note_12_pro-11955.php" title="View more">Xiaomi Redmi Note 12 Pro</a></td>
+                        <td>$349</td>
+                        <td>Display: 6.67" AMOLED<br>
+                            Processor: MediaTek Dimensity 1080<br>
+                            Camera: 50MP Rear, 16MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: MIUI 14 (Android 13)</td>
+                        <td>January 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/oppo_reno10_pro+-12275.php" title="View more">Oppo Reno 10 Pro+</a></td>
+                        <td>$749</td>
+                        <td>Display: 6.74" AMOLED<br>
+                            Processor: Qualcomm Snapdragon 8 Gen 1<br>
+                            Camera: 50MP Rear, 32MP Front<br>
+                            Battery: 4700mAh<br>
+                            OS: ColorOS 13 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/samsung_galaxy_a34-12074.php" title="View more">Samsung Galaxy A34 5G</a></td>
+                        <td>$399</td>
+                        <td>Display: 6.6" Super AMOLED<br>
+                            Processor: Exynos 1280<br>
+                            Camera: 48MP Rear, 13MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: Android 13</td>
+                        <td>January 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/realme_11_pro+-12246.php" title="View more" title="View more">Realme 11 Pro+</a></td>
+                        <td>$499</td>
+                        <td>Display: 6.7" AMOLED<br>
+                            Processor: MediaTek Dimensity 7050<br>
+                            Camera: 200MP Rear, 32MP Front<br>
+                            Battery: 5000mAh<br>
+                            OS: Realme UI 4.0 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/vivo_v27_pro-12117.php" title="View more">Samsung Galaxy A54 5G</a></td>
+                        <td class="price">$499</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.5" Super AMOLED<br>
+                            <span>Processor:</span> Exynos 1380<br>
+                            <span>Camera:</span> 50MP Rear, 32MP Front<br>
+                            <span>Battery:</span> 5000mAh<br>
+                            <span>OS:</span> One UI 5 (Android 13)</td>
 
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/vivo_v27_pro-12117.php" title="View more">Vivo V27 Pro</a></td>
+                        <td class="price">$399</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.78" AMOLED<br>
+                            <span>Processor:</span> MediaTek Dimensity 8200<br>
+                            <span>Camera:</span> 50MP Rear, 50MP Front<br>
+                            <span>Battery:</span> 4600mAh<br>
+                            <span>OS:</span> Funtouch OS 13 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/infinix_zero_ultra-11922.php" title="View more">Infinix Zero Ultra</a></td>
+                        <td class="price">$399</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.8" AMOLED<br>
+                            <span>Processor:</span> MediaTek Dimensity 920<br>
+                            <span>Camera:</span> 200MP Rear<br>32MP Front<br>
+                            <span>Battery:</span> 4500mAh<br>
+                            <span>OS:</span> XOS 12 (Android 13)</td>
+                        <td>February 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.devicespecifications.com/en/model/abe65c37" title="View more">Samsung Galaxy M54 5G</a></td>
+                        <td class="price">$499</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.7" Super AMOLED<br>
+                            <span>Processor:</span> Exynos 1380<br>
+                            <span>Camera:</span> 108MP Rear, 32MP Front<br>
+                            <span>Battery:</span> 6000mAh<br>
+                            <span>OS:</span> One UI 5 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/realme_narzo_60_pro-12396.php" title="View more">Realme Narzo 60 Pro</a></td>
+                        <td class="price">$329</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.72" AMOLED<br>
+                            <span>Processor:</span> MediaTek Dimensity 7050<br>
+                            <span>Camera:</span> 50MP Rear, 16MP Front<br>
+                            <span>Battery:</span> 5000mAh<br>
+                            <span>OS:</span> Realme UI 4.0 (Android 13)</td>
+                        <td>February 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/xiaomi_redmi_note_12_pro-11955.php" title="View more">Xiaomi Redmi Note 12 Pro</a></td>
+                        <td class="price">$399</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.67" AMOLED<br>
+                            <span>Processor:</span> MediaTek Dimensity 1080<br>
+                            <span>Camera:</span> 50MP Rear, 16MP Front<br>
+                            <span>Battery:</span> 5000mAh<br>
+                            <span>OS:</span> MIUI 14 (Android 13)</td>
+                        <td>January 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/oppo_reno10_pro+-12275.php" title="View more">Oppo Reno 10 Pro+</a></td>
+                        <td class="price">$699</td>
+                        <td class="specs"><span>Display:</span> 6.7" AMOLED<br>
+                            <span>Processor:</span> Snapdragon 8+ Gen 1<br>
+                            <span>Camera:</span> 50MP Rear, 32MP Front<br>
+                            <span>Battery:</span> 5000mAh<br>
+                            <span>OS:</span> ColorOS 13 (Android 13)</td>
+                        <td>March 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/honor_magic5_pro-12148.php" title="View more">Honor Magic 5 Pro</a></td>
+                        <td class="price">$1,099</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.81" OLED<br>
+                            <span>Processor:</span> Snapdragon 8 Gen 2<br>
+                            <span>Camera:</span> 50MP Rear, 12MP Front<br>
+                            <span>Battery:</span> 5100mAh<br>
+                            <span>OS:</span> MagicOS 7.0 (Android 13)</td>
+                        <td>April 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/asus_zenfone_10-12380.php" title="View more">Asus Zenfone 10</a></td>
+                        <td class="price">$799</td>
+                        <td class="specs">
+                            <span>Display:</span> 5.9" AMOLED<br>
+                            <span>Processor:</span> Snapdragon 8 Gen 2<br>
+                            <span>Camera:</span> 50MP Rear, 32MP Front<br>
+                            <span>Battery:</span> 4300mAh<br>
+                            <span>OS:</span> ZenUI (Android 13)</td>
+
+                        <td>April 2025</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.gsmarena.com/google_pixel_7a-12170.php" title="View more">Google Pixel 7a</a></td>
+                        <td class="price">$499</td>
+                        <td class="specs">
+                            <span>Display:</span> 6.1" OLED<br>
+                            <span>Processor:</span> Google Tensor G2<br>
+                            <span>Camera:</span> 64MP Rear, 13MP Front<br>
+                            <span>Battery:</span> 4385mAh<br>
+                            <span>OS:</span> Android 13</td>
+                        <td>May 2025</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="home-btn" onclick="goHome()" id="tite">Home</button>
+        </div>
+        
+
+
+
+
+
+        <div class="section" id="infoSection" style="display: none;">
+        
+            <p>
+                Hello user! i just want to inform you that this website is just
+                a basic site that can help you choose what's best suit phone for you.
+                Our homescreen consist of 4 buttons. First, Recommended Android Phone section. 
+                Second is about the info for the website, Third is an Ai ChatBot which is actually
+                helpful for your concerns in a phone, Last but not the least, Here we
+                have Recommended ios section. Thank you for using this website to guide you choosing
+                 what's the right phone for you! :D Additional information is that there is a home button
+                  that you can click if you want to get out of the page. Enjoy!
+            </p>
+            <button class="home-btn" onclick="goHome()" id="tite">Home</button>
+        </div>
+
+
+
+        <div class="section" id="chatbotSection" style="display: none;">
+            <div class="chatbot-container">
+                <div class="chatbot-header">
+                    <h2>Phone Recommendation Assistant</h2>
+                </div>
+                
+                <div class="chat-interface">
+                    <div id="chat-messages">
+                        <div class="bot-message">Hello, i'm your guide to your phone choice! :D
+                        </div>
+                    </div>
+                    
+                    <div id="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+                
+                <div class="chatbot-suggestions">
+                    <p>Ask me anything about Phones!</p>
+                    <div class="suggestion-buttons">
+                        <button onclick="document.getElementById('userInput').value='What\'s the best Android phone?'; sendMessage()">Best Android phone?</button>
+                        <button onclick="document.getElementById('userInput').value='Recommend a good iPhone'; sendMessage()">Recommend an iPhone</button>
+                        <button onclick="document.getElementById('userInput').value='What phone has the best camera?'; sendMessage()">Best camera phone?</button>
+                        <button onclick="document.getElementById('userInput').value='Budget friendly options'; sendMessage()">Budget options</button>
+                    </div>
+                </div>
+            </div>
+            <button class="home-btn" onclick="goHome()">Home</button>
+        </div>
+
+
+
+        <div class="section" id="iosSection">
+      
+            <table>
+                <caption></caption>
+                <thead>
+                    <tr>
+                        <th>Phone Name</th>
+                        <th>Base Price</th>
+                        <th>Specifications</th>
+                        <th>Release Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <td><a href="https://www.gsmarena.com/apple_iphone_15_pro-12557.php" title="View more">iPhone 15 Pro</a></td>
+            <td>$999</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A17 Pro<br>
+                Camera: 48MP Rear, 12MP Front<br>
+                Battery: 3274mAh<br>
+                OS: iOS 17</td>
+            <td>September 2023</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111828" title="View more">iPhone 15 Pro Max</a></td>
+            <td>$1,199</td>
+            <td>Display: 6.7" Super Retina XDR OLED<br>
+                Processor: Apple A17 Pro<br>
+                Camera: 48MP Rear, 12MP Front<br>
+                Battery: 4422mAh<br>
+                OS: iOS 17</td>
+            <td>September 2023</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.apple.com/iphone-15/" title="View more">iPhone 15</a></td>
+            <td>$799</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A16 Bionic<br>
+                Camera: 48MP Rear, 12MP Front<br>
+                Battery: 3349mAh<br>
+                OS: iOS 17</td>
+            <td>September 2023</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.apple.com/iphone-15/" title="View more">iPhone 15 Plus</a></td>
+            <td>$899</td>
+            <td>Display: 6.7" Super Retina XDR OLED<br>
+                Processor: Apple A16 Bionic<br>
+                Camera: 48MP Rear, 12MP Front<br>
+                Battery: 4383mAh<br>
+                OS: iOS 17</td>
+            <td>September 2023</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111849" title="View more">iPhone 14</a></td>
+            <td>$699</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A15 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3279mAh<br>
+                OS: iOS 16 (upgradable)</td>
+            <td>September 2022</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111846" title="View more">iPhone 14 Pro</a></td>
+            <td>$999</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A16 Bionic<br>
+                Camera: 48MP Rear, 12MP Front<br>
+                Battery: 3200mAh<br>
+                OS: iOS 16 (upgradable)</td>
+            <td>September 2022</td>
+        </tr>
+        <tr>
+            <td><a href="https://www.apple.com/iphone-14-pro/" title="View more">iPhone 14 Pro Max</a></td>
+            <td>$1,099</td>
+            <td>Display: 6.7" Super Retina XDR OLED<br>
+                Processor: Apple A16 Bionic<br>
+                Camera: 48MP Rear, 12MP Front<br>
+                Battery: 4323mAh<br>
+                OS: iOS 16 (upgradable)</td>
+            <td>September 2022</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111866" title="View more">iPhone SE (2022)</a></td>
+            <td>$429</td>
+            <td>Display: 4.7" Retina HD LCD<br>
+                Processor: Apple A15 Bionic<br>
+                Camera: 12MP Rear, 7MP Front<br>
+                Battery: 2018mAh<br>
+                OS: iOS 15 (upgradable)</td>
+            <td>March 2022</td>
+        </tr>
+        <tr>
+            <td><a href="">iPhone 13</a></td>
+            <td>$799</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A15 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3240mAh<br>
+                OS: iOS 15 (upgradable)</td>
+            <td>September 2021</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111871" title="View more">iPhone 13 Pro</a></td>
+            <td>$999</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A15 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3095mAh<br>
+                OS: iOS 15 (upgradable)</td>
+            <td>September 2021</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111870" title="View more">iPhone 13 Pro Max</a></td>
+            <td>$1,099</td>
+            <td>Display: 6.7" Super Retina XDR OLED<br>
+                Processor: Apple A15 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 4352mAh<br>
+                OS: iOS 15 (upgradable)</td>
+            <td>September 2021</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111870" title="View more">iPhone 12</a></td>
+            <td>$699</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A14 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 2815mAh<br>
+                OS: iOS 14 (upgradable)</td>
+            <td>October 2020</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111877" title="View more">iPhone 12 Mini</a></td>
+            <td>$699</td>
+            <td>Display: 5.4" Super Retina XDR OLED<br>
+                Processor: Apple A14 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 2227mAh<br>
+                OS: iOS 14 (upgradable)</td>
+            <td>October 2020</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111875" title="View more">iPhone 12 Pro</a></td>
+            <td>$999</td>
+            <td>Display: 6.1" Super Retina XDR OLED<br>
+                Processor: Apple A14 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 2815mAh<br>
+                OS: iOS 14 (upgradable)</td>
+            <td>October 2020</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111874" title="View more">iPhone 12 Pro Max</a></td>
+            <td>$1,099</td>
+            <td>Display: 6.7" Super Retina XDR OLED<br>
+                Processor: Apple A14 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3687mAh<br>
+                OS: iOS 14 (upgradable)</td>
+            <td>October 2020</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111865" title="View more">iPhone 11</a></td>
+            <td>$699</td>
+            <td>Display: 6.1" Liquid Retina HD LCD<br>
+                Processor: Apple A13 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3110mAh<br>
+                OS: iOS 13 (upgradable)</td>
+            <td>September 2019</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111879" title="View more">iPhone 11 Pro</a></td>
+            <td>$999</td>
+            <td>Display: 5.8" Super Retina XDR OLED<br>
+                Processor: Apple A13 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3046mAh<br>
+                OS: iOS 13 (upgradable)</td>
+            <td>September 2019</td>
+        </tr>
+        <tr>
+            <td><a href="https://support.apple.com/en-us/111878" title="View more">iPhone 11 Pro Max</a></td>
+            <td>$1,099</td>
+            <td>Display: 6.5" Super Retina XDR OLED<br>
+                Processor: Apple A13 Bionic<br>
+                Camera: 12MP Rear, 12MP Front<br>
+                Battery: 3969mAh<br>
+                OS: iOS 13 (upgradable)</td>
+            <td>September 2019</td>
+        </tbody>
+    </table>
+    <button class="home-btn" onclick="goHome()">Home</button>
+</div>
+
+
+
+        
+        <script src="script.js"></script>
+    </body>
+    </html>
