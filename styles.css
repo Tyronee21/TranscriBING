@@ -7,11 +7,12 @@
 body, html {
   height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
   color: #333;
   scroll-behavior: smooth;
 }
 
-/* Main Container with split background */
+/* Main Container */
 .container {
   height: 100vh;
   display: flex;
@@ -19,7 +20,7 @@ body, html {
   align-items: center;
   flex-direction: column;
   gap: 24px;
-  background: linear-gradient(to bottom, #ffffff 0%, #ffffff 50%, #e8f5e9 50%, #e8f5e9 100%);
+ 
   transition: all 0.3s ease;
 }
 
@@ -81,17 +82,12 @@ button {
   transform: translateY(-2px);
 }
 
-/* Section Styling - now full page */
+/* Section Styling */
 .section {
   display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   padding: 40px 20px;
   text-align: center;
-  overflow-y: auto;
+  min-height: 100vh;
   transition: all 0.3s ease;
 }
 
@@ -114,7 +110,7 @@ button {
 }
 
 #infoSection {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -240,6 +236,7 @@ button {
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
+margin-left: 400px;
 }
 
 .chatbot-header {
