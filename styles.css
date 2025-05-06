@@ -10,6 +10,7 @@ body, html {
   background-color: #f8f9fa;
   color: #333;
   scroll-behavior: smooth;
+background: linear-gradient(to bottom, #ffffff 50%, #3ddc84 50%);
 }
 
 /* Main Container */
