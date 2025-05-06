@@ -236,6 +236,8 @@ button {
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
+  align-items: center;
+  justify-content: center;
 }
 
 .chatbot-header {
