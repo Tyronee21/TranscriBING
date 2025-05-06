@@ -14,7 +14,7 @@ body, html {
 
 /* Main Container */
 .container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,18 +22,20 @@ body, html {
   gap: 24px;
   background: linear-gradient(to bottom, #ffffff 50%, #3ddc84 50%);
   transition: all 0.3s ease;
+  padding: 20px;
 }
 
 /* Button Styling */
 button {
-  font-size: 16px;
+  font-size: clamp(14px, 2vw, 16px);
   font-weight: 500;
   border: none;
   border-radius: 12px;
-  padding: 12px 32px;
+  padding: 12px 24px;
   cursor: pointer;
   transition: all 0.25s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: fit-content;
 }
 
 .android-btn {
@@ -71,10 +73,11 @@ button {
   background-color: #212121;
   color: white;
   padding: 10px 24px;
-  font-size: 15px;
+  font-size: clamp(14px, 2vw, 15px);
   margin-top: 24px;
   border-radius: 8px;
   display: inline-block;
+  text-decoration: none;
 }
 
 .home-btn:hover {
@@ -88,6 +91,7 @@ button {
   padding: 40px 20px;
   text-align: center;
   min-height: 100vh;
+  width: 100%;
   transition: all 0.3s ease;
 }
 
@@ -110,11 +114,11 @@ button {
 }
 
 #infoSection {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
+  width: 90%;
   max-width: 800px;
   padding: 32px;
   background-color: #ffffff;
@@ -125,10 +129,12 @@ button {
   text-align: left;
   line-height: 1.6;
   z-index: 100;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 #infoSection p {
-  font-size: 16px;
+  font-size: clamp(14px, 2vw, 16px);
   margin-bottom: 20px;
 }
 
@@ -139,35 +145,37 @@ button {
 
 /* Table Styling */
 .section table {
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
   margin: 30px auto;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
+  display: block;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
 }
 
 .section th, 
 .section td {
-  padding: 16px 20px;
+  padding: clamp(8px, 2vw, 16px);
   text-align: left;
 }
 
 .section th {
   color: white;
-  font-size: 16px;
+  font-size: clamp(14px, 2vw, 16px);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .section td {
   background-color: white;
   color: #333;  
-  font-size: 15px;
+  font-size: clamp(13px, 2vw, 15px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -199,7 +207,7 @@ button {
 }
 
 .section caption {
-  font-size: 24px;
+  font-size: clamp(18px, 3vw, 24px);
   color: #333;
   margin-bottom: 20px;
   font-weight: bold;
@@ -235,9 +243,7 @@ button {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-  margin-bottom: 30px;
-  align-items: center;
-  justify-content: center;
+  margin: 0 auto 30px auto;
 }
 
 .chatbot-header {
@@ -249,14 +255,14 @@ button {
 
 .chatbot-header h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: clamp(16px, 3vw, 20px);
   font-weight: 500;
 }
 
 .chat-interface {
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: clamp(300px, 60vh, 400px);
 }
 
 #chat-messages {
@@ -290,39 +296,75 @@ button {
   border-bottom-left-radius: 4px;
 }
 
-/* Responsive design */
+/* Add chat input styling */
+.chat-input-container {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+  border-top: 1px solid #e0e0e0;
+}
+
+#chat-input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 24px;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+#send-button {
+  background-color: #3ddc84;
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Media queries for better responsiveness */
 @media screen and (max-width: 768px) {
-  .section table {
-    width: 100%;
-    font-size: 14px;
-  }
-  
-  .section th, .section td {
-    padding: 12px 10px;
-  }
-  
-  .chatbot-container {
-    width: 95%;
+  .section {
+    padding: 30px 15px;
   }
   
   button {
-    font-size: 14px;
-    padding: 10px 24px;
+    padding: 10px 20px;
   }
   
   #infoSection {
-    width: 90%;
-    padding: 20px;
+    padding: 25px;
+  }
+  
+  .chat-interface {
+    height: 350px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .section th, .section td {
-    padding: 10px 8px;
-    font-size: 13px;
+  .section {
+    padding: 20px 10px;
   }
   
-  .section caption {
-    font-size: 18px;
+  button {
+    padding: 8px 16px;
+  }
+  
+  #infoSection {
+    padding: 20px;
+    width: 95%;
+  }
+  
+  .chat-interface {
+    height: 300px;
+  }
+  
+  .user-message, .bot-message {
+    max-width: 85%;
+    padding: 10px 12px;
   }
 }
