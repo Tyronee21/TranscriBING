@@ -24,7 +24,7 @@ body, html {
   gap: 24px;
   transition: all 0.3s ease;
   padding: 20px;
-background: linear-gradient(to bottom, #ffffff 0%, #ffffff 50%, #e8f5e9 50%, #e8f5e9 100%);
+
 }
 
 /* Button Styling */
