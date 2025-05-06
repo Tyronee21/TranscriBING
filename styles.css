@@ -1,3 +1,4 @@
+```css
 * {
   margin: 0;
   padding: 0;
@@ -20,7 +21,7 @@ body, html {
   align-items: center;
   flex-direction: column;
   gap: 24px;
-  background: linear-gradient(to bottom, #ffffff 50%, #3ddc84 50%);
+  background-color: #ffffff;
   transition: all 0.3s ease;
   padding: 20px;
 }
@@ -92,6 +93,8 @@ button {
   text-align: center;
   min-height: 100vh;
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   transition: all 0.3s ease;
 }
 
@@ -107,10 +110,18 @@ button {
 
 #androidSection {
   background: linear-gradient(145deg, rgba(171, 222, 142, 0.8) 0%, rgba(61, 220, 132, 0.6) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #iosSection {
   background: linear-gradient(145deg, rgba(255, 253, 245, 0.8) 0%, rgba(255, 239, 213, 0.7) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #infoSection {
@@ -146,7 +157,7 @@ button {
 /* Table Styling */
 .section table {
   width: 100%;
-  max-width: 1200px;
+  max-width: 900px;
   margin: 30px auto;
   border-collapse: separate;
   border-spacing: 0;
@@ -368,3 +379,4 @@ button {
     padding: 10px 12px;
   }
 }
+```
