@@ -1,4 +1,3 @@
-
 function goToSection(section) {
   // Hide the main menu
   document.getElementById('mainMenu').style.display = 'none';
