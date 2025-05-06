@@ -20,7 +20,7 @@ body, html {
   align-items: center;
   flex-direction: column;
   gap: 24px;
- 
+  background: linear-gradient(to bottom, #ffffff 50%, #3ddc84 50%);
   transition: all 0.3s ease;
 }
 
@@ -236,7 +236,7 @@ button {
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
-margin-left: 400px;
+margin-left: 400px
 }
 
 .chatbot-header {
