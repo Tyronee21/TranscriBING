@@ -1,603 +1,581 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Platform Navigation</title>
-        <link rel="stylesheet" href="styles.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Transcription Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #f59e0b;
+      --success: #10b981;
+      --error: #ef4444;
+      --text: #1f2937;
+      --text-light: #6b7280;
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --border: #e5e7eb;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: rgba(99, 102, 241, 0.3);
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 640px;
+      background-color: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    
+    .header {
+      padding: 24px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      text-align: center;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .content {
+      padding: 24px;
+    }
+    
+    .upload-section {
+      text-align: center;
+      margin-bottom: 24px;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      transition: all 0.2s ease;
+    }
+    
+    .upload-section:hover {
+      border-color: var(--primary);
+      background-color: rgba(119, 238, 145, 0.03);
+    }
+    
+    .upload-section input[type="file"] {
+      display: none;
+    }
+    
+    .upload-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      margin-bottom: 16px;
+    }
+    
+    .upload-label:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    
+    .file-info {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-top: 12px;
+    }
+    
+    .video-preview {
+      display: none;
+      margin-bottom: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    video {
+      width: 100%;
+      display: block;
+    }
+    
+    .transcribe-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .transcribe-btn:disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    .transcribe-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .status-message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .status-info {
+      background-color: #e0e7ff;
+      color: #4338ca;
+    }
+    
+    .status-success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-error {
+      background-color: #b7f1ba;
+      color: #b91c1c;
+    }
+    
+    .transcript-section {
+      margin-top: 24px;
+      display: none;
+    }
+    
+    .transcript-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .transcript-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .transcript-content {
+      background-color: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text);
+      min-height: 120px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid var(--border);
+    }
+    
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background-color: white;
+      color: var(--text);
+    }
+    
+    .action-btn:hover {
+      background-color: #f3f4f6;
+      transform: translateY(-1px);
+    }
+    
+    .action-btn:active {
+      transform: translateY(0);
+    }
+    
+    .progress-container {
+      margin-top: 16px;
+      display: none;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background-color: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    .progress-text {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    @media (max-width: 640px) {
+      .container {
+        border-radius: 12px;
+      }
       
-    </head>
-    <body>
-        
-        <div class="container" id="mainMenu">
-            <button class="android-btn" onclick="goToSection('android')">ANDROID</button>
-            <button class="info-btn" onclick="goToSection('info')">INFO</button>
-             <button class="info-btn" onclick="goToSection('CHATBOT')">CHATBOT</button>
-            <button class="ios-btn" onclick="goToSection('ios')">IOS</button>
-        </div>
-        
-        <div class="section" id="androidSection">
-            <table>
-                <caption></caption>
-                <thead>
-                    <tr>
-                        <th>Phone Name</th>
-                        <th>Base Price</th>
-                        <th>Specifications</th>
-                        <th>Release Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><a href="https://www.phonearena.com/phones/Samsung-Galaxy-S23-Ultra_id12002" title="View more">Samsung Galaxy S23 Ultra</a></td>
-                        <td>$1,199</td>
-                        <td>Display: 6.8" Dynamic AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 200MP Rear, 12MP Front <br>
-                            Battery: 5000mAh<br>
-                            OS: Android 13</td>
-                        <td>February 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.techradar.com/phones/google-pixel-phones/google-pixel-8-pro-review" title="View more">Google Pixel 8 Pro</a></td>
-                        <td>$999</td>
-                        <td>Display: 6.7" LTPO OLED<br>
-                            Processor: Google Tensor G3<br>
-                            Camera: 50MP Rear, 10.8MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: Android 14</td>
-                        <td>October 2024</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.oneplus.com/us/11/specs">OnePlus 11</a></td>
-                        <td>$899</td>
-                        <td>Display: 6.7" Fluid AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 50MP Rear, 16MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: Android 13</td>
-                        <td>January 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.mi.com/global/product/xiaomi-13-pro/specs" title="View more">Xiaomi 13 Pro</a></td>
-                        <td>$1,099</td>
-                        <td>Display: 6.73" AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 50MP Rear, 32MP Front<br>
-                            Battery: 4820mAh<br>
-                            OS: MIUI 14 (Android 13)</td>
-                        <td>February 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.samsung.com/ph/smartphones/galaxy-z-fold5/specs/?msockid=3e9b1d1f03aa60d2140808c702be6166" title="View more">Samsung Galaxy Z Fold 5</a></td>
-                        <td>$1,799</td>
-                        <td>Display: 7.6" Foldable AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 50MP Rear<br>
-                            10MP Front, Battery: 4400mAh<br>OS: Android 13</td>
-                        <td>August 2024</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/oppo_find_x6_pro-12105.php" title="View more">Oppo Find X6 Pro</a></td>
-                        <td>$1,299</td>
-                        <td>Display: 6.82" AMOLED<br>Processor: Qualcomm Snapdragon 8 Gen 2<br>Camera: 50MP Rear, 32MP Front<br>Battery: 5000mAh<br> OS: ColorOS 13 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/sony_xperia_1_v-12263.php" title="View more">Sony Xperia 1 V</a></td>
-                        <td>$1,399</td>
-                        <td>Display: 6.5" OLED 4K<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 48MP Rear, 8MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: Android 14</td>
-                        <td>April 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/motorola_edge_40_pro-12127.php" title="View more">Motorola Edge 40 Pro</a></td>
-                        <td>$899</td>
-                        <td>Display: 6.67" OLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 50MP Rear, 32MP Front<br>
-                            Battery: 4600mAh<br>
-                            OS: Android 13</td>
-                        <td>February 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/realme_gt2_pro-11228.php" title="View more">Realme GT 2 Pro</a></td>
-                        <td>$849</td>
-                        <td>Display: 6.7" AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 1<br>
-                            Camera: 50MP Rear, 32MP Front, Battery: 5000mAh<br>
-                            OS: Realme UI 4.0 (Android 13)</td>
-                        <td>January 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/asus_rog_phone_7-12223.php" title="View more">Asus ROG Phone 7</a></td>
-                        <td>$1,099</td>
-                        <td>Display: 6.78" AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 50MP Rear, 32MP Front<br>
-                            Battery: 6000mAh<br>
-                            OS: Android 13</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/vivo_x90_pro-11989.php" title="View more">Vivo X90 Pro</a></td>
-                        <td>$1,049</td>
-                        <td>Display: 6.78" AMOLED<br>
-                            Processor: MediaTek Dimensity 9200<br>
-                            Camera: 50MP Rear, 32MP Front<br>
-                            Battery: 4870mAh<br>
-                            OS: Funtouch OS 13 (Android 13)</td>
-                        <td>February 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/xiaomi_poco_f5_pro-12257.php" title="View more">Poco F5 Pro</a></td>
-                        <td>$649</td>
-                        <td>Display: 6.67" AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 64MP Rear, 16MP Front<br>
-                            Battery: 5160mAh<br>
-                            OS: MIUI 14 (Android 13)</td>
-                        <td>April 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/honor_magic5_pro-12148.php" title="View more">Honor Magic 5 Pro</a></td>
-                        <td>$1,099</td>
-                        <td>Display: 6.81" OLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 2<br>
-                            Camera: 50MP Rear, 12MP Front<br>
-                            Battery: 5100mAh<br>
-                            OS: MagicOS 7.0 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/google_pixel_8-12546.php" title="View more">Google Pixel 8</a></td>
-                        <td>$699</td>
-                        <td>Display: 6.2" OLED<br>
-                            Processor: Google Tensor G3<br>
-                            Camera: 50MP Rear, 10.8MP Front<br>
-                            Battery: 4500mAh, OS: Android 14</td>
-                        <td>October 2024</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.samsung.com/ph/smartphones/galaxy-a/galaxy-a54-5g-awesome-graphite-256gb-sm-a546ezkdphl/" title="View more">Samsung Galaxy A54 5G</a></td>
-                        <td>$449</td>
-                        <td>Display: 6.5" Super AMOLED<br>
-                            Processor: Exynos 1380<br>
-                            Camera: 50MP Rear, 32MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: Android 13</td>
-                        <td>January 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/oneplus_nord_3-12135.php" title="View more">OnePlus Nord 3</a></td>
-                        <td>$399</td>
-                        <td>Display: 6.74" AMOLED<br>
-                            Processor: MediaTek Dimensity 9000<br>
-                            Camera: 50MP Rear, 16MP Front<br>
-                            Battery: 5000mAh<br>
-                                OS: OxygenOS 13 (Android 13)</td>
-                        <td>April 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/xiaomi_redmi_note_12_pro-11955.php" title="View more">Xiaomi Redmi Note 12 Pro</a></td>
-                        <td>$349</td>
-                        <td>Display: 6.67" AMOLED<br>
-                            Processor: MediaTek Dimensity 1080<br>
-                            Camera: 50MP Rear, 16MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: MIUI 14 (Android 13)</td>
-                        <td>January 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/oppo_reno10_pro+-12275.php" title="View more">Oppo Reno 10 Pro+</a></td>
-                        <td>$749</td>
-                        <td>Display: 6.74" AMOLED<br>
-                            Processor: Qualcomm Snapdragon 8 Gen 1<br>
-                            Camera: 50MP Rear, 32MP Front<br>
-                            Battery: 4700mAh<br>
-                            OS: ColorOS 13 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/samsung_galaxy_a34-12074.php" title="View more">Samsung Galaxy A34 5G</a></td>
-                        <td>$399</td>
-                        <td>Display: 6.6" Super AMOLED<br>
-                            Processor: Exynos 1280<br>
-                            Camera: 48MP Rear, 13MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: Android 13</td>
-                        <td>January 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/realme_11_pro+-12246.php" title="View more" title="View more">Realme 11 Pro+</a></td>
-                        <td>$499</td>
-                        <td>Display: 6.7" AMOLED<br>
-                            Processor: MediaTek Dimensity 7050<br>
-                            Camera: 200MP Rear, 32MP Front<br>
-                            Battery: 5000mAh<br>
-                            OS: Realme UI 4.0 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/vivo_v27_pro-12117.php" title="View more">Samsung Galaxy A54 5G</a></td>
-                        <td class="price">$499</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.5" Super AMOLED<br>
-                            <span>Processor:</span> Exynos 1380<br>
-                            <span>Camera:</span> 50MP Rear, 32MP Front<br>
-                            <span>Battery:</span> 5000mAh<br>
-                            <span>OS:</span> One UI 5 (Android 13)</td>
-
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/vivo_v27_pro-12117.php" title="View more">Vivo V27 Pro</a></td>
-                        <td class="price">$399</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.78" AMOLED<br>
-                            <span>Processor:</span> MediaTek Dimensity 8200<br>
-                            <span>Camera:</span> 50MP Rear, 50MP Front<br>
-                            <span>Battery:</span> 4600mAh<br>
-                            <span>OS:</span> Funtouch OS 13 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/infinix_zero_ultra-11922.php" title="View more">Infinix Zero Ultra</a></td>
-                        <td class="price">$399</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.8" AMOLED<br>
-                            <span>Processor:</span> MediaTek Dimensity 920<br>
-                            <span>Camera:</span> 200MP Rear<br>32MP Front<br>
-                            <span>Battery:</span> 4500mAh<br>
-                            <span>OS:</span> XOS 12 (Android 13)</td>
-                        <td>February 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.devicespecifications.com/en/model/abe65c37" title="View more">Samsung Galaxy M54 5G</a></td>
-                        <td class="price">$499</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.7" Super AMOLED<br>
-                            <span>Processor:</span> Exynos 1380<br>
-                            <span>Camera:</span> 108MP Rear, 32MP Front<br>
-                            <span>Battery:</span> 6000mAh<br>
-                            <span>OS:</span> One UI 5 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/realme_narzo_60_pro-12396.php" title="View more">Realme Narzo 60 Pro</a></td>
-                        <td class="price">$329</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.72" AMOLED<br>
-                            <span>Processor:</span> MediaTek Dimensity 7050<br>
-                            <span>Camera:</span> 50MP Rear, 16MP Front<br>
-                            <span>Battery:</span> 5000mAh<br>
-                            <span>OS:</span> Realme UI 4.0 (Android 13)</td>
-                        <td>February 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/xiaomi_redmi_note_12_pro-11955.php" title="View more">Xiaomi Redmi Note 12 Pro</a></td>
-                        <td class="price">$399</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.67" AMOLED<br>
-                            <span>Processor:</span> MediaTek Dimensity 1080<br>
-                            <span>Camera:</span> 50MP Rear, 16MP Front<br>
-                            <span>Battery:</span> 5000mAh<br>
-                            <span>OS:</span> MIUI 14 (Android 13)</td>
-                        <td>January 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/oppo_reno10_pro+-12275.php" title="View more">Oppo Reno 10 Pro+</a></td>
-                        <td class="price">$699</td>
-                        <td class="specs"><span>Display:</span> 6.7" AMOLED<br>
-                            <span>Processor:</span> Snapdragon 8+ Gen 1<br>
-                            <span>Camera:</span> 50MP Rear, 32MP Front<br>
-                            <span>Battery:</span> 5000mAh<br>
-                            <span>OS:</span> ColorOS 13 (Android 13)</td>
-                        <td>March 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/honor_magic5_pro-12148.php" title="View more">Honor Magic 5 Pro</a></td>
-                        <td class="price">$1,099</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.81" OLED<br>
-                            <span>Processor:</span> Snapdragon 8 Gen 2<br>
-                            <span>Camera:</span> 50MP Rear, 12MP Front<br>
-                            <span>Battery:</span> 5100mAh<br>
-                            <span>OS:</span> MagicOS 7.0 (Android 13)</td>
-                        <td>April 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/asus_zenfone_10-12380.php" title="View more">Asus Zenfone 10</a></td>
-                        <td class="price">$799</td>
-                        <td class="specs">
-                            <span>Display:</span> 5.9" AMOLED<br>
-                            <span>Processor:</span> Snapdragon 8 Gen 2<br>
-                            <span>Camera:</span> 50MP Rear, 32MP Front<br>
-                            <span>Battery:</span> 4300mAh<br>
-                            <span>OS:</span> ZenUI (Android 13)</td>
-
-                        <td>April 2025</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://www.gsmarena.com/google_pixel_7a-12170.php" title="View more">Google Pixel 7a</a></td>
-                        <td class="price">$499</td>
-                        <td class="specs">
-                            <span>Display:</span> 6.1" OLED<br>
-                            <span>Processor:</span> Google Tensor G2<br>
-                            <span>Camera:</span> 64MP Rear, 13MP Front<br>
-                            <span>Battery:</span> 4385mAh<br>
-                            <span>OS:</span> Android 13</td>
-                        <td>May 2025</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="home-btn" onclick="goHome()" id="tite">Home</button>
-        </div>
-        
-
-
-
-
-
-        <div class="section" id="infoSection" style="display: none;">
-        
-            <p>
-                Hello user! i just want to inform you that this website is just
-                a basic site that can help you choose what's best suit phone for you.
-                Our homescreen consist of 4 buttons. First, Recommended Android Phone section. 
-                Second is about the info for the website, Third is an Ai ChatBot which is actually
-                helpful for your concerns in a phone, Last but not the least, Here we
-                have Recommended ios section. Thank you for using this website to guide you choosing
-                 what's the right phone for you! :D Additional information is that there is a home button
-               that you can click if you want to get out of the page. also, Clicking phone names take
-               to full phone specs with pictures. Enjoy!
-            </p>
-            <button class="home-btn" onclick="goHome()" id="tite">Home</button>
-        </div>
-
-
-
-        <div class="section" id="chatbotSection" style="display: none;">
-            <div class="chatbot-container">
-                <div class="chatbot-header">
-                    <h2>Phone Recommendation Assistant</h2>
-                </div>
-                
-                <div class="chat-interface">
-                    <div id="chat-messages">
-                        <div class="bot-message">Hello, i'm your guide to your phone choice! :D
-                        </div>
-                    </div>
-                    
-                    <div id="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                    
-                    <div class="chat-input-area">
-                        <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
-                        <button onclick="sendMessage()">Send</button>
-                    </div>
-                </div>
-                
-                <div class="chatbot-suggestions">
-                    <p>Ask me anything about Phones!</p>
-                    <div class="suggestion-buttons">
-                        <button onclick="document.getElementById('userInput').value='What\'s the best Android phone?'; sendMessage()">Best Android phone?</button>
-                        <button onclick="document.getElementById('userInput').value='Recommend a good iPhone'; sendMessage()">Recommend an iPhone</button>
-                        <button onclick="document.getElementById('userInput').value='What phone has the best camera?'; sendMessage()">Best camera phone?</button>
-                        <button onclick="document.getElementById('userInput').value='Budget friendly options'; sendMessage()">Budget options</button>
-                    </div>
-                </div>
-            </div>
-            <button class="home-btn" onclick="goHome()">Home</button>
-        </div>
-
-
-
-        <div class="section" id="iosSection">
+      .header {
+        padding: 20px;
+      }
       
-            <table>
-                <caption></caption>
-                <thead>
-                    <tr>
-                        <th>Phone Name</th>
-                        <th>Base Price</th>
-                        <th>Specifications</th>
-                        <th>Release Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-            <td><a href="https://www.gsmarena.com/apple_iphone_15_pro-12557.php" title="View more">iPhone 15 Pro</a></td>
-            <td>$999</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A17 Pro<br>
-                Camera: 48MP Rear, 12MP Front<br>
-                Battery: 3274mAh<br>
-                OS: iOS 17</td>
-            <td>September 2023</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111828" title="View more">iPhone 15 Pro Max</a></td>
-            <td>$1,199</td>
-            <td>Display: 6.7" Super Retina XDR OLED<br>
-                Processor: Apple A17 Pro<br>
-                Camera: 48MP Rear, 12MP Front<br>
-                Battery: 4422mAh<br>
-                OS: iOS 17</td>
-            <td>September 2023</td>
-        </tr>
-        <tr>
-            <td><a href="https://www.apple.com/iphone-15/" title="View more">iPhone 15</a></td>
-            <td>$799</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A16 Bionic<br>
-                Camera: 48MP Rear, 12MP Front<br>
-                Battery: 3349mAh<br>
-                OS: iOS 17</td>
-            <td>September 2023</td>
-        </tr>
-        <tr>
-            <td><a href="https://www.apple.com/iphone-15/" title="View more">iPhone 15 Plus</a></td>
-            <td>$899</td>
-            <td>Display: 6.7" Super Retina XDR OLED<br>
-                Processor: Apple A16 Bionic<br>
-                Camera: 48MP Rear, 12MP Front<br>
-                Battery: 4383mAh<br>
-                OS: iOS 17</td>
-            <td>September 2023</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111849" title="View more">iPhone 14</a></td>
-            <td>$699</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A15 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3279mAh<br>
-                OS: iOS 16 (upgradable)</td>
-            <td>September 2022</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111846" title="View more">iPhone 14 Pro</a></td>
-            <td>$999</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A16 Bionic<br>
-                Camera: 48MP Rear, 12MP Front<br>
-                Battery: 3200mAh<br>
-                OS: iOS 16 (upgradable)</td>
-            <td>September 2022</td>
-        </tr>
-        <tr>
-            <td><a href="https://www.apple.com/iphone-14-pro/" title="View more">iPhone 14 Pro Max</a></td>
-            <td>$1,099</td>
-            <td>Display: 6.7" Super Retina XDR OLED<br>
-                Processor: Apple A16 Bionic<br>
-                Camera: 48MP Rear, 12MP Front<br>
-                Battery: 4323mAh<br>
-                OS: iOS 16 (upgradable)</td>
-            <td>September 2022</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111866" title="View more">iPhone SE (2022)</a></td>
-            <td>$429</td>
-            <td>Display: 4.7" Retina HD LCD<br>
-                Processor: Apple A15 Bionic<br>
-                Camera: 12MP Rear, 7MP Front<br>
-                Battery: 2018mAh<br>
-                OS: iOS 15 (upgradable)</td>
-            <td>March 2022</td>
-        </tr>
-        <tr>
-            <td><a href="">iPhone 13</a></td>
-            <td>$799</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A15 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3240mAh<br>
-                OS: iOS 15 (upgradable)</td>
-            <td>September 2021</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111871" title="View more">iPhone 13 Pro</a></td>
-            <td>$999</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A15 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3095mAh<br>
-                OS: iOS 15 (upgradable)</td>
-            <td>September 2021</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111870" title="View more">iPhone 13 Pro Max</a></td>
-            <td>$1,099</td>
-            <td>Display: 6.7" Super Retina XDR OLED<br>
-                Processor: Apple A15 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 4352mAh<br>
-                OS: iOS 15 (upgradable)</td>
-            <td>September 2021</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111870" title="View more">iPhone 12</a></td>
-            <td>$699</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A14 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 2815mAh<br>
-                OS: iOS 14 (upgradable)</td>
-            <td>October 2020</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111877" title="View more">iPhone 12 Mini</a></td>
-            <td>$699</td>
-            <td>Display: 5.4" Super Retina XDR OLED<br>
-                Processor: Apple A14 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 2227mAh<br>
-                OS: iOS 14 (upgradable)</td>
-            <td>October 2020</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111875" title="View more">iPhone 12 Pro</a></td>
-            <td>$999</td>
-            <td>Display: 6.1" Super Retina XDR OLED<br>
-                Processor: Apple A14 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 2815mAh<br>
-                OS: iOS 14 (upgradable)</td>
-            <td>October 2020</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111874" title="View more">iPhone 12 Pro Max</a></td>
-            <td>$1,099</td>
-            <td>Display: 6.7" Super Retina XDR OLED<br>
-                Processor: Apple A14 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3687mAh<br>
-                OS: iOS 14 (upgradable)</td>
-            <td>October 2020</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111865" title="View more">iPhone 11</a></td>
-            <td>$699</td>
-            <td>Display: 6.1" Liquid Retina HD LCD<br>
-                Processor: Apple A13 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3110mAh<br>
-                OS: iOS 13 (upgradable)</td>
-            <td>September 2019</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111879" title="View more">iPhone 11 Pro</a></td>
-            <td>$999</td>
-            <td>Display: 5.8" Super Retina XDR OLED<br>
-                Processor: Apple A13 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3046mAh<br>
-                OS: iOS 13 (upgradable)</td>
-            <td>September 2019</td>
-        </tr>
-        <tr>
-            <td><a href="https://support.apple.com/en-us/111878" title="View more">iPhone 11 Pro Max</a></td>
-            <td>$1,099</td>
-            <td>Display: 6.5" Super Retina XDR OLED<br>
-                Processor: Apple A13 Bionic<br>
-                Camera: 12MP Rear, 12MP Front<br>
-                Battery: 3969mAh<br>
-                OS: iOS 13 (upgradable)</td>
-            <td>September 2019</td>
-        </tbody>
-    </table>
-    <button class="home-btn" onclick="goHome()">Home</button>
-</div>
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+      
+      .upload-section {
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"></polygon>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+        </svg>
+        Transcription Tool
+      </h1>
+    </div>
+    
+    <div class="content">
+      <div class="upload-section" id="dropZone">
+        <label class="upload-label" for="fileInput">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Upload Video File
+        </label>
+        <input type="file" id="fileInput" accept="video/*">
+        <div class="file-info" id="fileInfo">you can also drag file here</div>
+      </div>
+      
+      <div class="video-preview" id="videoPreview">
+        <video id="videoPlayer" controls></video>
+      </div>
+      
+      <button class="transcribe-btn" id="transcribeBtn" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        </svg>
+        Transcribe now
+      </button>
+      
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">0%</div>
+      </div>
+      
+      <div id="statusMessage"></div>
+      
+      <div class="transcript-section" id="transcriptSection">
+        <div class="transcript-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Transcript
+        </div>
+        <div class="transcript-content" id="transcriptContent"></div>
+        <div class="actions">
+          <button class="action-btn" id="copyBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy
+          </button>
+          <button class="action-btn" id="downloadBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    let selectedFile = null;
+    let transcriptionResult = '';
 
+    // DOM elements
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const videoPreview = document.getElementById('videoPreview');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const transcribeBtn = document.getElementById('transcribeBtn');
+    const statusMessage = document.getElementById('statusMessage');
+    const transcriptSection = document.getElementById('transcriptSection');
+    const transcriptContent = document.getElementById('transcriptContent');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const dropZone = document.getElementById('dropZone');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
 
+    // Helper functions
+    function showStatus(msg, type = "info") {
+      statusMessage.className = "status-message status-" + type;
+      statusMessage.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          ${type === "info" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line>` : ''}
+          ${type === "success" ? `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>` : ''}
+          ${type === "error" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line>` : ''}
+        </svg>
+        ${msg}
+      `;
+    }
+
+    function clearStatus() {
+      statusMessage.textContent = "";
+      statusMessage.className = "";
+    }
+
+    function updateProgress(percentage) {
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${Math.round(percentage)}%`;
+    }
+
+    // Event listeners
+    fileInput.addEventListener('change', async (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelection(e.target.files[0]);
+      }
+    });
+
+    // Drag and drop functionality
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#6366f1';
+      dropZone.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.borderColor = 'var(--border)';
+      dropZone.style.backgroundColor = '';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'var(--border)';
+      dropZone.style.backgroundColor = '';
+      
+      if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('video/')) {
+          handleFileSelection(file);
+          // Set the file input for consistency
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          fileInput.files = dataTransfer.files;
+        } else {
+          showStatus('Please select a video file', 'error');
+        }
+      }
+    });
+
+    function handleFileSelection(file) {
+      selectedFile = file;
+      fileInfo.textContent = `📄 ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`;
+      videoPlayer.src = URL.createObjectURL(selectedFile);
+      videoPreview.style.display = 'block';
+      transcriptSection.style.display = 'none';
+      transcribeBtn.disabled = false;
+      clearStatus();
+    }
+
+    transcribeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      
+      transcriptSection.style.display = 'none';
+      progressContainer.style.display = 'block';
+      updateProgress(0);
+      showStatus("Uploading video file...", "info");
+      transcribeBtn.disabled = true;
+      
+      try {
+        // 1. Upload video to AssemblyAI
+        const uploadRes = await fetch('https://api.assemblyai.com/v2/upload', {
+          method: 'POST',
+          headers: { 'authorization': 'dd6339371d324d2888d2c46eba0ad277' },
+          body: selectedFile
+        });
         
-        <script src="script.js"></script>
-    </body>
-    </html>
+        const uploadData = await uploadRes.json();
+        if (!uploadData.upload_url) throw new Error("Upload failed");
+        updateProgress(30);
+        
+        // 2. Request transcription
+        showStatus("Starting transcription process...", "info");
+        const transcriptRes = await fetch('https://api.assemblyai.com/v2/transcript', {
+          method: 'POST',
+          headers: {
+            'authorization': 'dd6339371d324d2888d2c46eba0ad277',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({ audio_url: uploadData.upload_url })
+        });
+        
+        const transcriptData = await transcriptRes.json();
+        if (!transcriptData.id) throw new Error("Transcription request failed");
+        updateProgress(50);
+        
+        // 3. Poll for result
+        showStatus("Transcribing your video...", "info");
+        let transcript;
+        let pollingAttempts = 0;
+        const maxAttempts = 30; // ~2.5 minutes timeout
+        
+        while (pollingAttempts < maxAttempts) {
+          await new Promise(r => setTimeout(r, 5000));
+          pollingAttempts++;
+          
+          const pollingRes = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptData.id}`, {
+            headers: { 'authorization': 'dd6339371d324d2888d2c46eba0ad277' }
+          });
+          
+          transcript = await pollingRes.json();
+          
+          // Update progress based on status
+          if (transcript.status === 'queued') {
+            updateProgress(50 + (pollingAttempts * 1));
+          } else if (transcript.status === 'processing') {
+            updateProgress(60 + (pollingAttempts * 2));
+          }
+          
+          if (transcript.status === 'completed') break;
+          if (transcript.status === 'failed') throw new Error('Transcription failed');
+        }
+        
+        if (pollingAttempts >= maxAttempts) {
+          throw new Error('Transcription timed out');
+        }
+        
+        transcriptionResult = transcript.text;
+        transcriptContent.textContent = transcriptionResult || "(No speech detected in the video)";
+        transcriptSection.style.display = 'block';
+        progressContainer.style.display = 'none';
+        showStatus("Transcription completed successfully!", "success");
+      } catch (err) {
+        progressContainer.style.display = 'none';
+        showStatus("Error: " + err.message, "error");
+      }
+      
+      transcribeBtn.disabled = false;
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(transcriptionResult);
+        copyBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"></path>
+          </svg>
+          Copied!
+        `;
+        setTimeout(() => { 
+          copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy
+          `;
+        }, 2000);
+      } catch {
+        copyBtn.textContent = "Failed";
+        setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const blob = new Blob([transcriptionResult], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `transcript-${new Date().toISOString().slice(0,10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
