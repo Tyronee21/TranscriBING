@@ -479,7 +479,7 @@
         // 1. Upload video to AssemblyAI
         const uploadRes = await fetch('https://api.assemblyai.com/v2/upload', {
           method: 'POST',
-          headers: { 'authorization': 'dd6339371d324d2888d2c46eba0ad277' },
+          headers: { 'authorization': 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z' },
           body: selectedFile
         });
         
@@ -492,7 +492,7 @@
         const transcriptRes = await fetch('https://api.assemblyai.com/v2/transcript', {
           method: 'POST',
           headers: {
-            'authorization': 'dd6339371d324d2888d2c46eba0ad277',
+            'authorization': 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z',
             'content-type': 'application/json'
           },
           body: JSON.stringify({ audio_url: uploadData.upload_url })
