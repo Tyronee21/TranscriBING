@@ -377,210 +377,223 @@
 
   <script>
     let selectedFile = null;
-    let transcriptionResult = '';
+let transcriptionResult = '';
 
-    // DOM elements
-    const fileInput = document.getElementById('fileInput');
-    const fileInfo = document.getElementById('fileInfo');
-    const videoPreview = document.getElementById('videoPreview');
-    const videoPlayer = document.getElementById('videoPlayer');
-    const transcribeBtn = document.getElementById('transcribeBtn');
-    const statusMessage = document.getElementById('statusMessage');
-    const transcriptSection = document.getElementById('transcriptSection');
-    const transcriptContent = document.getElementById('transcriptContent');
-    const copyBtn = document.getElementById('copyBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const dropZone = document.getElementById('dropZone');
-    const progressContainer = document.getElementById('progressContainer');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
+// DOM elements
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const videoPreview = document.getElementById('videoPreview');
+const videoPlayer = document.getElementById('videoPlayer');
+const transcribeBtn = document.getElementById('transcribeBtn');
+const statusMessage = document.getElementById('statusMessage');
+const transcriptSection = document.getElementById('transcriptSection');
+const transcriptContent = document.getElementById('transcriptContent');
+const copyBtn = document.getElementById('copyBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const dropZone = document.getElementById('dropZone');
+const progressContainer = document.getElementById('progressContainer');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
 
-    // Helper functions
-    function showStatus(msg, type = "info") {
-      statusMessage.className = "status-message status-" + type;
-      statusMessage.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          ${type === "info" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line>` : ''}
-          ${type === "success" ? `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>` : ''}
-          ${type === "error" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line>` : ''}
-        </svg>
-        ${msg}
-      `;
+const API_KEY = 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z';
+
+function showStatus(msg, type = "info") {
+  statusMessage.className = "status-message status-" + type;
+  statusMessage.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      ${type === "info" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line>` : ''}
+      ${type === "success" ? `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>` : ''}
+      ${type === "error" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line>` : ''}
+    </svg>
+    ${msg}
+  `;
+}
+
+function clearStatus() {
+  statusMessage.textContent = "";
+  statusMessage.className = "";
+}
+
+function updateProgress(percentage) {
+  progressFill.style.width = `${percentage}%`;
+  progressText.textContent = `${Math.round(percentage)}%`;
+}
+
+fileInput.addEventListener('change', async (e) => {
+  if (e.target.files.length > 0) {
+    handleFileSelection(e.target.files[0]);
+  }
+});
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.style.borderColor = '#10b981';
+  dropZone.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+});
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.style.borderColor = 'var(--border)';
+  dropZone.style.backgroundColor = '';
+});
+
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.style.borderColor = 'var(--border)';
+  dropZone.style.backgroundColor = '';
+
+  if (e.dataTransfer.files.length > 0) {
+    const file = e.dataTransfer.files[0];
+    if (file.type.startsWith('video/')) {
+      handleFileSelection(file);
+      // Set the file input for consistency
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileInput.files = dataTransfer.files;
+    } else {
+      showStatus('Please select a video file', 'error');
     }
+  }
+});
 
-    function clearStatus() {
-      statusMessage.textContent = "";
-      statusMessage.className = "";
-    }
+function handleFileSelection(file) {
+  selectedFile = file;
+  fileInfo.textContent = `📄 ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`;
+  videoPlayer.src = URL.createObjectURL(selectedFile);
+  videoPreview.style.display = 'block';
+  transcriptSection.style.display = 'none';
+  transcribeBtn.disabled = false;
+  clearStatus();
+}
 
-    function updateProgress(percentage) {
-      progressFill.style.width = `${percentage}%`;
-      progressText.textContent = `${Math.round(percentage)}%`;
-    }
+transcribeBtn.addEventListener('click', async () => {
+  if (!selectedFile) return;
 
-    // Event listeners
-    fileInput.addEventListener('change', async (e) => {
-      if (e.target.files.length > 0) {
-        handleFileSelection(e.target.files[0]);
-      }
+  transcriptSection.style.display = 'none';
+  progressContainer.style.display = 'block';
+  updateProgress(0);
+  showStatus("Uploading video file...", "info");
+  transcribeBtn.disabled = true;
+
+  try {
+    // 1. Upload and create transcription job
+    const formData = new FormData();
+    formData.append('data_file', selectedFile);
+
+    const uploadRes = await fetch('https://asr.api.speechmatics.com/v2/jobs/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: formData
     });
 
-    // Drag and drop functionality
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = '#10b981';
-      dropZone.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
-    });
+    if (!uploadRes.ok) {
+      throw new Error(`Upload failed: ${uploadRes.statusText}`);
+    }
 
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.style.borderColor = 'var(--border)';
-      dropZone.style.backgroundColor = '';
-    });
+    const uploadData = await uploadRes.json();
+    if (!uploadData.id) throw new Error("Failed to create transcription job");
+    updateProgress(30);
 
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = 'var(--border)';
-      dropZone.style.backgroundColor = '';
-      
-      if (e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        if (file.type.startsWith('video/')) {
-          handleFileSelection(file);
-          // Set the file input for consistency
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          fileInput.files = dataTransfer.files;
-        } else {
-          showStatus('Please select a video file', 'error');
+    const jobId = uploadData.id;
+
+    // 2. Poll for transcription status
+    showStatus("Transcribing your video...", "info");
+
+    let status = '';
+    let pollingAttempts = 0;
+    const maxAttempts = 40; // ~3+ minutes max
+
+    while (pollingAttempts < maxAttempts) {
+      await new Promise(r => setTimeout(r, 5000));
+      pollingAttempts++;
+
+      const statusRes = await fetch(`https://asr.api.speechmatics.com/v2/jobs/${jobId}/`, {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`
         }
+      });
+
+      if (!statusRes.ok) {
+        throw new Error(`Failed to get job status: ${statusRes.statusText}`);
       }
-    });
 
-    function handleFileSelection(file) {
-      selectedFile = file;
-      fileInfo.textContent = `📄 ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`;
-      videoPlayer.src = URL.createObjectURL(selectedFile);
-      videoPreview.style.display = 'block';
-      transcriptSection.style.display = 'none';
-      transcribeBtn.disabled = false;
-      clearStatus();
-    }
+      const statusData = await statusRes.json();
+      status = statusData.status;
 
-    transcribeBtn.addEventListener('click', async () => {
-      if (!selectedFile) return;
-      
-      transcriptSection.style.display = 'none';
-      progressContainer.style.display = 'block';
-      updateProgress(0);
-      showStatus("Uploading video file...", "info");
-      transcribeBtn.disabled = true;
-      
-      try {
-        // 1. Upload video to AssemblyAI
-        const uploadRes = await fetch('https://api.assemblyai.com/v2/upload', {
-          method: 'POST',
-          headers: { 'authorization': 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z' },
-          body: selectedFile
-        });
-        
-        const uploadData = await uploadRes.json();
-        if (!uploadData.upload_url) throw new Error("Upload failed");
-        updateProgress(30);
-        
-        // 2. Request transcription
-        showStatus("Starting transcription process...", "info");
-        const transcriptRes = await fetch('https://api.assemblyai.com/v2/transcript', {
-          method: 'POST',
+      if (status === 'done') {
+        // 3. Fetch transcript text
+        const transcriptRes = await fetch(`https://asr.api.speechmatics.com/v2/jobs/${jobId}/transcript?format=txt`, {
           headers: {
-            'authorization': 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({ audio_url: uploadData.upload_url })
-        });
-        
-        const transcriptData = await transcriptRes.json();
-        if (!transcriptData.id) throw new Error("Transcription request failed");
-        updateProgress(50);
-        
-        // 3. Poll for result
-        showStatus("Transcribing your video...", "info");
-        let transcript;
-        let pollingAttempts = 0;
-        const maxAttempts = 30; // ~2.5 minutes timeout
-        
-        while (pollingAttempts < maxAttempts) {
-          await new Promise(r => setTimeout(r, 5000));
-          pollingAttempts++;
-          
-          const pollingRes = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptData.id}`, {
-            headers: { 'authorization': 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z' }
-          });
-          
-          transcript = await pollingRes.json();
-          
-          // Update progress based on status
-          if (transcript.status === 'queued') {
-            updateProgress(50 + (pollingAttempts * 1));
-          } else if (transcript.status === 'processing') {
-            updateProgress(60 + (pollingAttempts * 2));
+            'Authorization': `Bearer ${API_KEY}`
           }
-          
-          if (transcript.status === 'completed') break;
-          if (transcript.status === 'failed') throw new Error('Transcription failed');
+        });
+
+        if (!transcriptRes.ok) {
+          throw new Error(`Failed to get transcript: ${transcriptRes.statusText}`);
         }
-        
-        if (pollingAttempts >= maxAttempts) {
-          throw new Error('Transcription timed out');
-        }
-        
-        transcriptionResult = transcript.text;
+
+        const transcriptText = await transcriptRes.text();
+        transcriptionResult = transcriptText;
         transcriptContent.textContent = transcriptionResult || "(No speech detected in the video)";
         transcriptSection.style.display = 'block';
         progressContainer.style.display = 'none';
         showStatus("Transcription completed successfully!", "success");
-      } catch (err) {
-        progressContainer.style.display = 'none';
-        showStatus("Error: " + err.message, "error");
+        break;
+      } else if (status === 'failed') {
+        throw new Error('Transcription failed');
+      } else {
+        // Update progress roughly between 30% and 90%
+        updateProgress(30 + (pollingAttempts * 1.5));
       }
-      
-      transcribeBtn.disabled = false;
-    });
+    }
 
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(transcriptionResult);
-        copyBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 6L9 17l-5-5"></path>
-          </svg>
-          Copied!
-        `;
-        setTimeout(() => { 
-          copyBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            Copy
-          `;
-        }, 2000);
-      } catch {
-        copyBtn.textContent = "Failed";
-        setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
-      }
-    });
+    if (pollingAttempts >= maxAttempts) {
+      throw new Error('Transcription timed out');
+    }
+  } catch (err) {
+    progressContainer.style.display = 'none';
+    showStatus("Error: " + err.message, "error");
+  }
 
-    downloadBtn.addEventListener('click', () => {
-      const blob = new Blob([transcriptionResult], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `transcript-${new Date().toISOString().slice(0,10)}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-  </script>
+  transcribeBtn.disabled = false;
+});
+
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(transcriptionResult);
+    copyBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"></path>
+      </svg>
+      Copied!
+    `;
+    setTimeout(() => {
+      copyBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Copy
+      `;
+    }, 2000);
+  } catch {
+    copyBtn.textContent = "Failed";
+    setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
+  }
+});
+
+downloadBtn.addEventListener('click', () => {
+  const blob = new Blob([transcriptionResult], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `transcript-${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+  </script>   
 </body>
 </html>
