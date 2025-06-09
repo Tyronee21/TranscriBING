@@ -379,6 +379,9 @@
     let selectedFile = null;
 let transcriptionResult = '';
 
+// Your Speechmatics API key here
+const API_KEY = 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z';
+
 // DOM elements
 const fileInput = document.getElementById('fileInput');
 const fileInfo = document.getElementById('fileInfo');
@@ -395,8 +398,7 @@ const progressContainer = document.getElementById('progressContainer');
 const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
 
-const API_KEY = 'vZOwRcgMt6cjlgesomZHs2X6MiLsS64Z';
-
+// Helper functions
 function showStatus(msg, type = "info") {
   statusMessage.className = "status-message status-" + type;
   statusMessage.innerHTML = `
@@ -419,12 +421,14 @@ function updateProgress(percentage) {
   progressText.textContent = `${Math.round(percentage)}%`;
 }
 
+// Event listeners
 fileInput.addEventListener('change', async (e) => {
   if (e.target.files.length > 0) {
     handleFileSelection(e.target.files[0]);
   }
 });
 
+// Drag and drop functionality
 dropZone.addEventListener('dragover', (e) => {
   e.preventDefault();
   dropZone.style.borderColor = '#10b981';
@@ -457,7 +461,7 @@ dropZone.addEventListener('drop', (e) => {
 
 function handleFileSelection(file) {
   selectedFile = file;
-  fileInfo.textContent = `📄 ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`;
+  fileInfo.textContent = `📄 ${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(2)} MB)`;
   videoPlayer.src = URL.createObjectURL(selectedFile);
   videoPreview.style.display = 'block';
   transcriptSection.style.display = 'none';
@@ -475,82 +479,58 @@ transcribeBtn.addEventListener('click', async () => {
   transcribeBtn.disabled = true;
 
   try {
-    // 1. Upload and create transcription job
+    // 1. Upload and create transcription job on Speechmatics
     const formData = new FormData();
     formData.append('data_file', selectedFile);
 
-    const uploadRes = await fetch('https://asr.api.speechmatics.com/v2/jobs/', {
+    const jobResponse = await fetch('https://asr.api.speechmatics.com/v2/jobs/', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${API_KEY}`
+        // Note: NO 'Content-Type' header here, let browser set it automatically
       },
       body: formData
     });
 
-    if (!uploadRes.ok) {
-      throw new Error(`Upload failed: ${uploadRes.statusText}`);
-    }
+    const jobData = await jobResponse.json();
 
-    const uploadData = await uploadRes.json();
-    if (!uploadData.id) throw new Error("Failed to create transcription job");
+    if (!jobData.id) throw new Error("Job creation failed: " + (jobData.error || "Unknown error"));
+
     updateProgress(30);
+    showStatus("Job created. Starting transcription...", "info");
 
-    const jobId = uploadData.id;
+    // 2. Poll for transcription result
+    let transcription = null;
+    let attempts = 0;
+    const maxAttempts = 40; // polling for ~3-4 minutes max
 
-    // 2. Poll for transcription status
-    showStatus("Transcribing your video...", "info");
+    while (attempts < maxAttempts) {
+      await new Promise(res => setTimeout(res, 5000));
+      attempts++;
 
-    let status = '';
-    let pollingAttempts = 0;
-    const maxAttempts = 40; // ~3+ minutes max
-
-    while (pollingAttempts < maxAttempts) {
-      await new Promise(r => setTimeout(r, 5000));
-      pollingAttempts++;
-
-      const statusRes = await fetch(`https://asr.api.speechmatics.com/v2/jobs/${jobId}/`, {
+      const pollResponse = await fetch(`https://asr.api.speechmatics.com/v2/jobs/${jobData.id}/transcript?format=txt`, {
         headers: {
           'Authorization': `Bearer ${API_KEY}`
         }
       });
 
-      if (!statusRes.ok) {
-        throw new Error(`Failed to get job status: ${statusRes.statusText}`);
+      if (pollResponse.status === 200) {
+        transcription = await pollResponse.text();
+        if (transcription && transcription.trim().length > 0) break;
       }
 
-      const statusData = await statusRes.json();
-      status = statusData.status;
-
-      if (status === 'done') {
-        // 3. Fetch transcript text
-        const transcriptRes = await fetch(`https://asr.api.speechmatics.com/v2/jobs/${jobId}/transcript?format=txt`, {
-          headers: {
-            'Authorization': `Bearer ${API_KEY}`
-          }
-        });
-
-        if (!transcriptRes.ok) {
-          throw new Error(`Failed to get transcript: ${transcriptRes.statusText}`);
-        }
-
-        const transcriptText = await transcriptRes.text();
-        transcriptionResult = transcriptText;
-        transcriptContent.textContent = transcriptionResult || "(No speech detected in the video)";
-        transcriptSection.style.display = 'block';
-        progressContainer.style.display = 'none';
-        showStatus("Transcription completed successfully!", "success");
-        break;
-      } else if (status === 'failed') {
-        throw new Error('Transcription failed');
-      } else {
-        // Update progress roughly between 30% and 90%
-        updateProgress(30 + (pollingAttempts * 1.5));
-      }
+      updateProgress(30 + (attempts * 2));
+      showStatus(`Transcribing... (${attempts * 5}s elapsed)`, 'info');
     }
 
-    if (pollingAttempts >= maxAttempts) {
-      throw new Error('Transcription timed out');
-    }
+    if (!transcription) throw new Error('Transcription timed out or failed');
+
+    transcriptionResult = transcription;
+    transcriptContent.textContent = transcriptionResult;
+    transcriptSection.style.display = 'block';
+    progressContainer.style.display = 'none';
+    showStatus("Transcription completed successfully!", "success");
+
   } catch (err) {
     progressContainer.style.display = 'none';
     showStatus("Error: " + err.message, "error");
@@ -588,7 +568,7 @@ downloadBtn.addEventListener('click', () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `transcript-${new Date().toISOString().slice(0,10)}.txt`;
+  a.download = `transcript-${new Date().toISOString().slice(0, 10)}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
