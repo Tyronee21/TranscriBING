@@ -1,586 +1,907 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Video Transcription Tool</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #10b981;
-      --primary-dark: #059669;
-      --primary-light: #d1fae5;
-      --secondary: #f59e0b;
-      --success: #10b981;
-      --error: #ef4444;
-      --text: #1f2937;
-      --text-light: #6b7280;
-      --bg: #f9fafb;
-      --card: #ffffff;
-      --border: #e5e7eb;
-      --header-gradient: linear-gradient(135deg, #10b981, #059669);
-    }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f0fdf4;
-      min-height: 100vh;
-      margin: 0;
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    
-    .container {
-      width: 100%;
-      max-width: 640px;
-      background-color: var(--card);
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    
-    .header {
-      padding: 24px;
-      background: var(--header-gradient);
-      color: white;
-      text-align: center;
-    }
-    
-    h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-    
-    .content {
-      padding: 24px;
-    }
-    
-    .upload-section {
-      text-align: center;
-      margin-bottom: 24px;
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 32px 24px;
-      transition: all 0.2s ease;
-      background-color: #f9fafb;
-    }
-    
-    .upload-section:hover {
-      border-color: var(--primary);
-      background-color: rgba(16, 185, 129, 0.03);
-    }
-    
-    .upload-section input[type="file"] {
-      display: none;
-    }
-    
-    .upload-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      background-color: var(--primary);
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      margin-bottom: 16px;
-    }
-    
-    .upload-label:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-    
-    .file-info {
-      font-size: 0.9rem;
-      color: var(--text-light);
-      margin-top: 12px;
-    }
-    
-    .video-preview {
-      display: none;
-      margin-bottom: 24px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--border);
-    }
-    
-    video {
-      width: 100%;
-      display: block;
-    }
-    
-    .transcribe-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--header-gradient);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    .transcribe-btn:disabled {
-      background: #e5e7eb;
-      color: #9ca3af;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-    
-    .transcribe-btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-    
-    .status-message {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin: 16px 0;
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .status-info {
-      background-color: #e0f2fe;
-      color: #0369a1;
-    }
-    
-    .status-success {
-      background-color: var(--primary-light);
-      color: #065f46;
-    }
-    
-    .status-error {
-      background-color: #fee2e2;
-      color: #b91c1c;
-    }
-    
-    .transcript-section {
-      margin-top: 24px;
-      display: none;
-    }
-    
-    .transcript-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    
-    .transcript-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .transcript-content {
-      background-color: var(--bg);
-      border-radius: 8px;
-      padding: 16px;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text);
-      min-height: 120px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      border: 1px solid var(--border);
-    }
-    
-    .actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-    }
-    
-    .action-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      border: 1px solid var(--border);
-      background-color: white;
-      color: var(--text);
-    }
-    
-    .action-btn:hover {
-      background-color: #f3f4f6;
-      transform: translateY(-1px);
-    }
-    
-    .action-btn:active {
-      transform: translateY(0);
-    }
-    
-    .progress-container {
-      margin-top: 16px;
-      display: none;
-    }
-    
-    .progress-bar {
-      height: 6px;
-      background-color: #e5e7eb;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    
-    .progress-text {
-      font-size: 0.8rem;
-      color: var(--text-light);
-      margin-top: 4px;
-      text-align: right;
-    }
-    
-    @media (max-width: 640px) {
-      .container {
-        border-radius: 12px;
-      }
-      
-      .header {
-        padding: 20px;
-      }
-      
-      h1 {
-        font-size: 1.5rem;
-      }
-      
-      .content {
-        padding: 20px;
-      }
-      
-      .upload-section {
-        padding: 24px 16px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEU Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #8b0000;
+            --primary-light: #a52a2a;
+            --secondary: #1e3a5f;
+            --accent: #ffd700;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .login-container, .portal-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: block;
+        }
+
+        .portal-container {
+            display: none;
+        }
+
+        .login-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .login-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .login-footer {
+            padding: 15px 30px;
+            background-color: #f8f9fa;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .portal-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .portal-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .portal-body {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background-color: var(--secondary);
+            color: white;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            padding: 25px;
+            background-color: #f8f9fa;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .status-list, .summary-list {
+            list-style-type: none;
+        }
+
+        .status-item, .summary-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-item:last-child, .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #856404;
+        }
+
+        .badge-danger {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background-color: rgba(23, 162, 184, 0.2);
+            color: #0c5460;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .time-slot {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .time-slot:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .time-slot.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .time-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .enrollment-list {
+            list-style-type: none;
+        }
+
+        .enrollment-item {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .request-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .portal-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .nav-item {
+                white-space: nowrap;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        </svg>
-        Video Transcription Tool
-      </h1>
+    <div class="container">
+        <!-- Login Stage -->
+        <div class="login-container" id="loginContainer">
+            <div class="login-header">
+                <h1>OUR LADY OF ICCTU ROOSEVELT</h1>
+            </div>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">Student ID</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter your Student ID">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password">
+                </div>
+                <button class="btn btn-block" id="loginBtn">Log In</button>
+            </div>
+            <div class="login-footer">
+                <a href="#" id="forgotPassword">Forgot Password?</a>
+            </div>
+        </div>
+
+        <!-- Portal Stage -->
+        <div class="portal-container" id="portalContainer">
+            <div class="portal-header">
+                <h1>OUR LAY OF ICCTU ROOSEVELT</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">JDF</div>
+                    <span id="userName">John Dex Francisco
+                    </span>
+                    <button class
+                    ="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+            <div class="portal-body">
+                <div class="sidebar">
+                    <div class="nav-item active" data-target="admissions">
+                        <i class="fas fa-user-graduate"></i> Admissions
+                    </div>
+                    <div class="nav-item" data-target="status">
+                        <i class="fas fa-info-circle"></i> Status
+                    </div>
+                    <div class="nav-item" data-target="summary">
+                        <i class="fas fa-chart-bar"></i> Summary
+                    </div>
+                    <div class="nav-item" data-target="schedule">
+                        <i class="fas fa-clock"></i> Time Schedule
+                    </div>
+                    <div class="nav-item" data-target="requests">
+                        <i class="fas fa-tasks"></i> My Requests
+                    </div>
+                </div>
+                <div class="main-content">
+                    <!-- Admissions Section -->
+                    <div class="content-section active" id="admissions">
+                        <h2 class="section-title">Admissions</h2>
+                        <div class="card">
+                            <h3 class="card-title">Enrollment</h3>
+                            <ul class="enrollment-list">
+                                <li class="enrollment-item">The Enrollment - <strong>Completed</strong></li>
+                                <li class="enrollment-item">Intriligent - <strong>In Progress</strong></li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Adjustment</h3>
+                            <button class="btn" id="makeRequestBtn">Make New Request</button>
+                            <div class="request-form" id="requestForm" style="display: none;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="requestType">Request Type</label>
+                                        <select id="requestType" class="form-control">
+                                            <option value="">Select request type</option>
+                                            <option value="course_add">Add Course</option>
+                                            <option value="course_drop">Drop Course</option>
+                                            <option value="section_change">Change Section</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="courseCode">Course Code</label>
+                                        <input type="text" id="courseCode" class="form-control" placeholder="e.g. MATH101">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="requestReason">Reason</label>
+                                    <textarea id="requestReason" class="form-control" rows="3" placeholder="Explain your request"></textarea>
+                                </div>
+                                <button class="btn" id="submitRequestBtn">Submit Request</button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Request Status</h3>
+                            <ul class="enrollment-list" id="requestStatusList">
+                                <!-- Request status will be dynamically added here -->
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Transactions</h3>
+                            <ul>
+                                <li>Student Reports - <a href="#" id="generateReport">Generate</a></li>
+                                <li>Payment History - <a href="#" id="viewPayments">View</a></li>
+                                <li>Academic Records - <a href="#" id="viewRecords">View</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Status Section -->
+                    <div class="content-section" id="status">
+                        <h2 class="section-title">Status</h2>
+                        <div class="card">
+                            <ul class="status-list">
+                                <li class="status-item">
+                                    <span>DPTF: Anti-Security</span>
+                                    <span class="status-badge badge-success">Completed</span>
+                                </li>
+                                <li class="status-item">
+                                    <span>Automatic Standing</span>
+                                    <span class="status-badge badge-warning">Pending</span>
+                                </li>
+                                <li class="status-item">
+                                    <span>Code Security</span>
+                                    <span class="status-badge badge-success">Completed</span>
+                                </li>
+                                <li class="status-item">
+                                    <span>Overpayment</span>
+                                    <span class="status-badge badge-danger">Issue</span>
+                                </li>
+                                <li class="status-item">
+                                    <span>U.S.A.S.</span>
+                                    <span class="status-badge badge-info">In Progress</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Summary Section -->
+                    <div class="content-section" id="summary">
+                        <h2 class="section-title">Summary</h2>
+                        <div class="card">
+                            <ul class="summary-list">
+                                <li class="summary-item">
+                                    <span>Monday</span>
+                                    <span>2 Classes</span>
+                                </li>
+                                <li class="summary-item">
+                                    <span>June 7</span>
+                                    <span>Exam Day</span>
+                                </li>
+                                <li class="summary-item">
+                                    <span>May 8</span>
+                                    <span>Holiday</span>
+                                </li>
+                                <li class="summary-item">
+                                    <span>Jun 9</span>
+                                    <span>Submission Deadline</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Academic Summary</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Current GPA</label>
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">3.75</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Units Enrolled</label>
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">18</div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Academic Standing</label>
+                                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">Good</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Schedule Section -->
+                    <div class="content-section" id="schedule">
+                        <h2 class="section-title">Time Schedule</h2>
+                        <div class="card">
+                            <div class="time-slots">
+                                <div class="time-slot">
+                                    <div class="time-value">2 am</div>
+                                    <div class="time-label">No Classes</div>
+                                </div>
+                                <div class="time-slot">
+                                    <div class="time-value">3 am</div>
+                                    <div class="time-label">No Classes</div>
+                                </div>
+                                <div class="time-slot">
+                                    <div class="time-value">4 am</div>
+                                    <div class="time-label">No Classes</div>
+                                </div>
+                                <div class="time-slot active">
+                                    <div class="time-value">5 am</div>
+                                    <div class="time-label">PE 101</div>
+                                </div>
+                                <div class="time-slot">
+                                    <div class="time-value">6 am</div>
+                                    <div class="time-label">Break</div>
+                                </div>
+                                <div class="time-slot active">
+                                    <div class="time-value">7 am</div>
+                                    <div class="time-label">MATH 101</div>
+                                </div>
+                                <div class="time-slot active">
+                                    <div class="time-value">8 am</div>
+                                    <div class="time-label">SCIENCE 101</div>
+                                </div>
+                                <div class="time-slot">
+                                    <div class="time-value">May</div>
+                                    <div class="time-label">Final Exams</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Current Courses</h3>
+                            <ul class="enrollment-list">
+                                <li class="enrollment-item">
+                                    <strong>MATH 101</strong> - Calculus I<br>
+                                    <small>Mon/Wed/Fri 7:00-8:00 AM | Room 201</small>
+                                </li>
+                                <li class="enrollment-item">
+                                    <strong>SCIENCE 101</strong> - General Science<br>
+                                    <small>Mon/Wed/Fri 8:00-9:00 AM | Room 305</small>
+                                </li>
+                                <li class="enrollment-item">
+                                    <strong>PE 101</strong> - Physical Education<br>
+                                    <small>Tue/Thu 5:00-6:00 AM | Gymnasium</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- My Requests Section -->
+                    <div class="content-section" id="requests">
+                        <h2 class="section-title">My Requests</h2>
+                        <div class="card">
+                            <h3 class="card-title">Pending Requests</h3>
+                            <ul class="enrollment-list" id="pendingRequests">
+                                <!-- Pending requests will be dynamically added here -->
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Request History</h3>
+                            <ul class="enrollment-list" id="requestHistory">
+                                <!-- Request history will be dynamically added here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="content">
-      <div class="upload-section" id="dropZone">
-        <label class="upload-label" for="fileInput">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Upload Video File
-        </label>
-        <input type="file" id="fileInput" accept="video/*">
-        <div class="file-info" id="fileInfo">You can also drag file here</div>
-      </div>
-      
-      <div class="video-preview" id="videoPreview">
-        <video id="videoPlayer" controls></video>
-      </div>
-      
-      <button class="transcribe-btn" id="transcribeBtn" disabled>
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-          <line x1="12" y1="19" x2="12" y2="23"></line>
-          <line x1="8" y1="23" x2="16" y2="23"></line>
-        </svg>
-        Transcribe Video
-      </button>
-      
-      <div class="progress-container" id="progressContainer">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-text" id="progressText">0%</div>
-      </div>
-      
-      <div id="statusMessage"></div>
-      
-      <div class="transcript-section" id="transcriptSection">
-        <div class="transcript-header">
-          <div class="transcript-title">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            Transcript
-          </div>
-        </div>
-        <div class="transcript-content" id="transcriptContent"></div>
-        <div class="actions">
-          <button class="action-btn" id="copyBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            Copy
-          </button>
-          <button class="action-btn" id="downloadBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Download
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script>
-    let selectedFile = null;
-    let transcriptionResult = '';
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
 
-    // DOM elements
-    const fileInput = document.getElementById('fileInput');
-    const fileInfo = document.getElementById('fileInfo');
-    const videoPreview = document.getElementById('videoPreview');
-    const videoPlayer = document.getElementById('videoPlayer');
-    const transcribeBtn = document.getElementById('transcribeBtn');
-    const statusMessage = document.getElementById('statusMessage');
-    const transcriptSection = document.getElementById('transcriptSection');
-    const transcriptContent = document.getElementById('transcriptContent');
-    const copyBtn = document.getElementById('copyBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const dropZone = document.getElementById('dropZone');
-    const progressContainer = document.getElementById('progressContainer');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
+    <script>
+        // DOM Elements
+        const loginContainer = document.getElementById('loginContainer');
+        const portalContainer = document.getElementById('portalContainer');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const forgotPasswordLink = document.getElementById('forgotPassword');
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const makeRequestBtn = document.getElementById('makeRequestBtn');
+        const requestForm = document.getElementById('requestForm');
+        const submitRequestBtn = document.getElementById('submitRequestBtn');
+        const requestStatusList = document.getElementById('requestStatusList');
+        const pendingRequests = document.getElementById('pendingRequests');
+        const requestHistory = document.getElementById('requestHistory');
+        const notification = document.getElementById('notification');
 
-    // Helper functions
-    function showStatus(msg, type = "info") {
-      statusMessage.className = "status-message status-" + type;
-      statusMessage.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          ${type === "info" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line>` : ''}
-          ${type === "success" ? `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>` : ''}
-          ${type === "error" ? `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line>` : ''}
-        </svg>
-        ${msg}
-      `;
-    }
-
-    function clearStatus() {
-      statusMessage.textContent = "";
-      statusMessage.className = "";
-    }
-
-    function updateProgress(percentage) {
-      progressFill.style.width = `${percentage}%`;
-      progressText.textContent = `${Math.round(percentage)}%`;
-    }
-
-    // Event listeners
-    fileInput.addEventListener('change', async (e) => {
-      if (e.target.files.length > 0) {
-        handleFileSelection(e.target.files[0]);
-      }
-    });
-
-    // Drag and drop functionality
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = '#10b981';
-      dropZone.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.style.borderColor = 'var(--border)';
-      dropZone.style.backgroundColor = '';
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = 'var(--border)';
-      dropZone.style.backgroundColor = '';
-      
-      if (e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        if (file.type.startsWith('video/')) {
-          handleFileSelection(file);
-          // Set the file input for consistency
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          fileInput.files = dataTransfer.files;
-        } else {
-          showStatus('Please select a video file', 'error');
+        // Initialize data in localStorage if not exists
+        function initializeData() {
+            if (!localStorage.getItem('feuUser')) {
+                localStorage.setItem('feuUser', JSON.stringify({
+                    username: 'student123',
+                    password: 'password123',
+                    name: 'John Dex Francisco',
+                    initials: 'JDF'
+                }));
+            }
+            
+            if (!localStorage.getItem('userRequests')) {
+                localStorage.setItem('userRequests', JSON.stringify([]));
+            }
         }
-      }
-    });
 
-    function handleFileSelection(file) {
-      selectedFile = file;
-      fileInfo.textContent = `📄 ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`;
-      videoPlayer.src = URL.createObjectURL(selectedFile);
-      videoPreview.style.display = 'block';
-      transcriptSection.style.display = 'none';
-      transcribeBtn.disabled = false;
-      clearStatus();
-    }
+        // Show notification
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            if (isError) {
+                notification.classList.add('error');
+            }
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
 
-    transcribeBtn.addEventListener('click', async () => {
-      if (!selectedFile) return;
-      
-      transcriptSection.style.display = 'none';
-      progressContainer.style.display = 'block';
-      updateProgress(0);
-      showStatus("Uploading video file...", "info");
-      transcribeBtn.disabled = true;
-      
-      try {
-        // 1. Upload video to AssemblyAI
-        const uploadRes = await fetch('https://api.assemblyai.com/v2/upload', {
-          method: 'POST',
-          headers: { 'authorization': 'dd6339371d324d2888d2c46eba0ad277' },
-          body: selectedFile
+        // Load requests from localStorage
+        function loadRequests() {
+            const requests = JSON.parse(localStorage.getItem('userRequests')) || [];
+            
+            // Clear existing lists
+            requestStatusList.innerHTML = '';
+            pendingRequests.innerHTML = '';
+            requestHistory.innerHTML = '';
+            
+            if (requests.length === 0) {
+                requestStatusList.innerHTML = '<li class="enrollment-item">No requests found.</li>';
+                pendingRequests.innerHTML = '<li class="enrollment-item">No pending requests.</li>';
+                requestHistory.innerHTML = '<li class="enrollment-item">No request history.</li>';
+                return;
+            }
+            
+            requests.forEach(request => {
+                const requestItem = document.createElement('li');
+                requestItem.className = 'enrollment-item';
+                
+                const statusClass = request.status === 'Pending' ? 'badge-warning' : 
+                                  request.status === 'Approved' ? 'badge-success' : 'badge-danger';
+                
+                requestItem.innerHTML = `
+                    <strong>${request.type}</strong> - ${request.course}<br>
+                    <small>${request.reason}</small><br>
+                    <span class="status-badge ${statusClass}">${request.status}</span>
+                    <small>Submitted: ${request.date}</small>
+                `;
+                
+                // Add to request status list
+                requestStatusList.appendChild(requestItem.cloneNode(true));
+                
+                // Add to appropriate list based on status
+                if (request.status === 'Pending') {
+                    pendingRequests.appendChild(requestItem.cloneNode(true));
+                } else {
+                    requestHistory.appendChild(requestItem.cloneNode(true));
+                }
+            });
+        }
+
+        // Login Function
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!username || !password) {
+                showNotification('Please enter both Student ID and Password', true);
+                return;
+            }
+            
+            const user = JSON.parse(localStorage.getItem('feuUser'));
+            
+            if (username === user.username && password === user.password) {
+                // Update user info in portal
+                userName.textContent = user.name;
+                userAvatar.textContent = user.initials;
+                
+                // Switch to portal view
+                loginContainer.style.display = 'none';
+                portalContainer.style.display = 'block';
+                
+                // Load user requests
+                loadRequests();
+                
+                showNotification('Login successful!');
+            } else {
+                showNotification('Invalid Student ID or Password. Please try again.', true);
+            }
         });
-        
-        const uploadData = await uploadRes.json();
-        if (!uploadData.upload_url) throw new Error("Upload failed");
-        updateProgress(30);
-        
-        // 2. Request transcription
-        showStatus("Starting transcription process...", "info");
-        const transcriptRes = await fetch('https://api.assemblyai.com/v2/transcript', {
-          method: 'POST',
-          headers: {
-            'authorization': 'dd6339371d324d2888d2c46eba0ad277',
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({ audio_url: uploadData.upload_url })
+
+        // Logout Function
+        logoutBtn.addEventListener('click', function() {
+            // Switch to login view
+            portalContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+            
+            // Clear input fields
+            usernameInput.value = '';
+            passwordInput.value = '';
+            
+            showNotification('You have been logged out successfully.');
         });
-        
-        const transcriptData = await transcriptRes.json();
-        if (!transcriptData.id) throw new Error("Transcription request failed");
-        updateProgress(50);
-        
-        // 3. Poll for result
-        showStatus("Transcribing your video...", "info");
-        let transcript;
-        let pollingAttempts = 0;
-        const maxAttempts = 30; // ~2.5 minutes timeout
-        
-        while (pollingAttempts < maxAttempts) {
-          await new Promise(r => setTimeout(r, 5000));
-          pollingAttempts++;
-          
-          const pollingRes = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptData.id}`, {
-            headers: { 'authorization': 'dd6339371d324d2888d2c46eba0ad277' }
-          });
-          
-          transcript = await pollingRes.json();
-          
-          // Update progress based on status
-          if (transcript.status === 'queued') {
-            updateProgress(50 + (pollingAttempts * 1));
-          } else if (transcript.status === 'processing') {
-            updateProgress(60 + (pollingAttempts * 2));
-          }
-          
-          if (transcript.status === 'completed') break;
-          if (transcript.status === 'failed') throw new Error('Transcription failed');
-        }
-        
-        if (pollingAttempts >= maxAttempts) {
-          throw new Error('Transcription timed out');
-        }
-        
-        transcriptionResult = transcript.text;
-        transcriptContent.textContent = transcriptionResult || "(No speech detected in the video)";
-        transcriptSection.style.display = 'block';
-        progressContainer.style.display = 'none';
-        showStatus("Transcription completed successfully!", "success");
-      } catch (err) {
-        progressContainer.style.display = 'none';
-        showStatus("Error: " + err.message, "error");
-      }
-      
-      transcribeBtn.disabled = false;
-    });
 
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(transcriptionResult);
-        copyBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 6L9 17l-5-5"></path>
-          </svg>
-          Copied!
-        `;
-        setTimeout(() => { 
-          copyBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            Copy
-          `;
-        }, 2000);
-      } catch {
-        copyBtn.textContent = "Failed";
-        setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
-      }
-    });
+        // Forgot Password
+        forgotPasswordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('Password reset instructions have been sent to your registered email.');
+        });
 
-    downloadBtn.addEventListener('click', () => {
-      const blob = new Blob([transcriptionResult], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `transcript-${new Date().toISOString().slice(0,10)}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-  </script>
+        // Navigation
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all nav items
+                navItems.forEach(nav => nav.classList.remove('active'));
+                
+                // Add active class to clicked nav item
+                this.classList.add('active');
+                
+                // Get target section
+                const target = this.getAttribute('data-target');
+                
+                // Hide all content sections
+                contentSections.forEach(section => section.classList.remove('active'));
+                
+                // Show target section
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // Make Request Button
+        makeRequestBtn.addEventListener('click', function() {
+            requestForm.style.display = requestForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Submit Request
+        submitRequestBtn.addEventListener('click', function() {
+            const requestType = document.getElementById('requestType').value;
+            const courseCode = document.getElementById('courseCode').value;
+            const requestReason = document.getElementById('requestReason').value;
+            
+            if (!requestType || !courseCode || !requestReason) {
+                showNotification('Please fill in all fields', true);
+                return;
+            }
+            
+            // Create new request
+            const newRequest = {
+                id: Date.now(),
+                type: document.getElementById('requestType').options[document.getElementById('requestType').selectedIndex].text,
+                course: courseCode,
+                reason: requestReason,
+                status: 'Pending',
+                date: new Date().toLocaleDateString()
+            };
+            
+            // Save to localStorage
+            const requests = JSON.parse(localStorage.getItem('userRequests')) || [];
+            requests.push(newRequest);
+            localStorage.setItem('userRequests', JSON.stringify(requests));
+            
+            // Reload requests
+            loadRequests();
+            
+            // Reset form
+            document.getElementById('requestType').value = '';
+            document.getElementById('courseCode').value = '';
+            document.getElementById('requestReason').value = '';
+            requestForm.style.display = 'none';
+            
+            showNotification('Request submitted successfully!');
+        });
+
+        // Other action buttons
+        document.getElementById('generateReport').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('Student report generated successfully!');
+        });
+
+        document.getElementById('viewPayments').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('Payment history loaded.');
+        });
+
+        document.getElementById('viewRecords').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('Academic records loaded.');
+        });
+
+        // Allow login with Enter key
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+
+        // Initialize data when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            
+            // Check if user is already logged in (for demo purposes)
+            // In a real application, you would check session or token
+        });
+    </script>
 </body>
 </html>
